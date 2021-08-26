@@ -1,0 +1,22 @@
+plugins {
+    id "application"
+}
+
+group "com.github.alexdlaird"
+version "1.0.0-SNAPSHOT"
+
+application {
+    mainClass = 'com.github.alexdlaird.ngrok.example.tcpserverclient'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "com.github.alexdlaird:java-ngrok:1.5.0"
+}
+
+test {
+    useJUnitPlatform()
+}
