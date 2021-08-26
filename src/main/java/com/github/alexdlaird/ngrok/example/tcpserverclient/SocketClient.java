@@ -23,27 +23,7 @@
 
 package com.github.alexdlaird.ngrok.example.tcpserverclient;
 
-public class JavaNgrokExampleTCPServerAndClient {
-    public static void main(String[] args) {
-        if (args.length != 1) {
-            printUsage();
-
-            System.exit(0);
-        }
-
-        if (args[0].equals("server")) {
-            final SocketServer socketServer = new SocketServer();
-            socketServer.start();
-        } else if (args[0].equals("client")) {
-            final SocketClient socketClient = new SocketClient();
-            socketClient.start();
-        } else {
-            printUsage();
-        }
-    }
-
-    private static void printUsage() {
-        System.out.println("positional arguments:\n" +
-                "  {server,client}");
+public class SocketClient {
+    public void start() {
     }
 }
