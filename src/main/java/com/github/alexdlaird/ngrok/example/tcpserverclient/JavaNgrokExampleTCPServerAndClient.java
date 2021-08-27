@@ -23,27 +23,53 @@
 
 package com.github.alexdlaird.ngrok.example.tcpserverclient;
 
+import com.github.alexdlaird.ngrok.NgrokClient;
+import com.github.alexdlaird.ngrok.protocol.CreateTunnel;
+import com.github.alexdlaird.ngrok.protocol.Proto;
+import com.github.alexdlaird.ngrok.protocol.Tunnel;
+
 public class JavaNgrokExampleTCPServerAndClient {
+
     public static void main(String[] args) {
-        if (args.length != 1) {
+        if (args.length != 1 || !System.getenv().containsKey("HOST") || !System.getenv().containsKey("PORT")) {
             printUsage();
 
             System.exit(0);
         }
 
+        final String host = System.getenv().get("HOST");
+        final int port = Integer.parseInt(System.getenv().get("PORT"));
+
         if (args[0].equals("server")) {
-            final SocketServer socketServer = new SocketServer();
+            startNgrok(host, port);
+
+            final SocketServer socketServer = new SocketServer(port);
             socketServer.start();
         } else if (args[0].equals("client")) {
-            final SocketClient socketClient = new SocketClient();
+            final SocketClient socketClient = new SocketClient(host, port);
             socketClient.start();
         } else {
             printUsage();
         }
     }
 
+    private static void startNgrok(final String host, final int port) {
+        final NgrokClient ngrokClient = new NgrokClient.Builder().build();
+
+        final CreateTunnel createTunnel = new CreateTunnel.Builder()
+                .withProto(Proto.TCP)
+                .withAddr(port)
+                .withRemoteAddr(String.format("%s:%s", host, port))
+                .build();
+        final Tunnel tunnel = ngrokClient.connect(createTunnel);
+
+        System.out.printf(" * ngrok tunnel \"%s\" -> \"http://127.0.0.1:%d\"%n", tunnel.getPublicUrl(), port);
+    }
+
     private static void printUsage() {
-        System.out.println("positional arguments:\n" +
-                "  {server,client}");
+        System.out.println("--- usage---\n" +
+                " - environment variables HOST and PORT must be set\n" +
+                " - positional arguments:\n" +
+                "     {server,client}");
     }
 }

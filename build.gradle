@@ -5,8 +5,15 @@ plugins {
 group "com.github.alexdlaird"
 version "1.0.0-SNAPSHOT"
 
-application {
-    mainClass = 'com.github.alexdlaird.ngrok.example.tcpserverclient'
+jar {
+    manifest {
+        attributes(
+                "Main-Class": "com.github.alexdlaird.ngrok.example.tcpserverclient.JavaNgrokExampleTCPServerAndClient"
+        )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
 
 repositories {
@@ -14,7 +21,7 @@ repositories {
 }
 
 dependencies {
-    implementation "com.github.alexdlaird:java-ngrok:1.5.2"
+    implementation "com.github.alexdlaird:java-ngrok:1.5.3"
 }
 
 test {

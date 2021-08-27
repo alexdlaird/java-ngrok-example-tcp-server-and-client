@@ -23,7 +23,34 @@
 
 package com.github.alexdlaird.ngrok.example.tcpserverclient;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
 public class SocketClient {
+
+    private final String host;
+    private final int port;
+
+    public SocketClient(final String host, final int port) {
+        this.host = host;
+        this.port = port;
+    }
+
     public void start() {
+        try (Socket socket = new Socket(host, port)) {
+            InputStream input = socket.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+
+            String time = reader.readLine();
+            System.out.println(time);
+        } catch (UnknownHostException ex) {
+            System.out.println("Server not found: " + ex.getMessage());
+        } catch (IOException ex) {
+            System.out.println("I/O error: " + ex.getMessage());
+        }
     }
 }
