@@ -27,8 +27,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
+
+import static java.util.Objects.nonNull;
 
 public class SocketClient {
 
@@ -40,17 +43,41 @@ public class SocketClient {
         this.port = port;
     }
 
-    public void start() {
-        try (Socket socket = new Socket(host, port)) {
-            InputStream input = socket.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+    public void start() throws IOException {
+        OutputStream output = null;
+        PrintWriter writer = null;
+        InputStream input = null;
+        BufferedReader reader = null;
 
-            String time = reader.readLine();
-            System.out.println(time);
-        } catch (UnknownHostException ex) {
-            System.out.println("Server not found: " + ex.getMessage());
-        } catch (IOException ex) {
-            System.out.println("I/O error: " + ex.getMessage());
+        // Connect to the server with the socket via our ngrok tunnel
+        try (Socket socket = new Socket(host, port)) {
+            System.out.printf("Connected to %s:%d\n", host, port);
+
+            // Send the message
+            final String message = "ping";
+            output = socket.getOutputStream();
+            writer = new PrintWriter(output, true);
+            System.out.printf("Sending: %s\n", message);
+            writer.println(message);
+
+            // Await a response
+            input = socket.getInputStream();
+            reader = new BufferedReader(new InputStreamReader(input));
+            final String data = reader.readLine();
+            System.out.printf("Received: %s\n", data);
+        } finally {
+            if (nonNull(output)) {
+                output.close();
+            }
+            if (nonNull(writer)) {
+                writer.close();
+            }
+            if (nonNull(input)) {
+                input.close();
+            }
+            if (nonNull(reader)) {
+                reader.close();
+            }
         }
     }
 }

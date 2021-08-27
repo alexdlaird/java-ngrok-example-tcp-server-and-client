@@ -23,12 +23,16 @@
 
 package com.github.alexdlaird.ngrok.example.tcpserverclient;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Date;
+
+import static java.util.Objects.nonNull;
 
 public class SocketServer {
 
@@ -38,24 +42,55 @@ public class SocketServer {
         this.port = port;
     }
 
-    public void start() {
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
+    public void start() throws IOException {
+        Socket socket = null;
+        InputStream input = null;
+        BufferedReader reader = null;
+        OutputStream output = null;
+        PrintWriter writer = null;
 
-            System.out.println("Server is listening on port " + port);
+        // Bind a local socket to the port
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
+            // Wait for a connection
+            System.out.println("Waiting for a connection ...");
+            socket = serverSocket.accept();
+
+            System.out.printf("... connection established from %s\n", socket.getInetAddress());
 
             while (true) {
-                Socket socket = serverSocket.accept();
+                // Receive the message
+                input = socket.getInputStream();
+                reader = new BufferedReader(new InputStreamReader(input));
+                final String data = reader.readLine();
+                if (nonNull(data)) {
+                    System.out.printf("Received: %s\n", data);
 
-                System.out.println("New client connected");
-
-                OutputStream output = socket.getOutputStream();
-                PrintWriter writer = new PrintWriter(output, true);
-
-                writer.println(new Date().toString());
+                    // Send a response
+                    final String message = "pong";
+                    output = socket.getOutputStream();
+                    writer = new PrintWriter(output, true);
+                    System.out.printf("Sending: %s\n", message);
+                    writer.println(message);
+                } else {
+                    break;
+                }
             }
-        } catch (IOException ex) {
-            System.out.println("Server exception: " + ex.getMessage());
-            ex.printStackTrace();
+        } finally {
+            if (nonNull(socket)) {
+                socket.close();
+            }
+            if (nonNull(input)) {
+                input.close();
+            }
+            if (nonNull(reader)) {
+                reader.close();
+            }
+            if (nonNull(output)) {
+                output.close();
+            }
+            if (nonNull(writer)) {
+                writer.close();
+            }
         }
     }
 }

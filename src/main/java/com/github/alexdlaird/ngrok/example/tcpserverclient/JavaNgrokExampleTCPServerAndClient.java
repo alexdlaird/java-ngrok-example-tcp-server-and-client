@@ -28,9 +28,11 @@ import com.github.alexdlaird.ngrok.protocol.CreateTunnel;
 import com.github.alexdlaird.ngrok.protocol.Proto;
 import com.github.alexdlaird.ngrok.protocol.Tunnel;
 
+import java.io.IOException;
+
 public class JavaNgrokExampleTCPServerAndClient {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         if (args.length != 1 || !System.getenv().containsKey("HOST") || !System.getenv().containsKey("PORT")) {
             printUsage();
 
@@ -41,6 +43,7 @@ public class JavaNgrokExampleTCPServerAndClient {
         final int port = Integer.parseInt(System.getenv().get("PORT"));
 
         if (args[0].equals("server")) {
+            // Open a ngrok tunnel to the socket
             startNgrok(host, port);
 
             final SocketServer socketServer = new SocketServer(port);
@@ -63,7 +66,7 @@ public class JavaNgrokExampleTCPServerAndClient {
                 .build();
         final Tunnel tunnel = ngrokClient.connect(createTunnel);
 
-        System.out.printf(" * ngrok tunnel \"%s\" -> \"http://127.0.0.1:%d\"%n", tunnel.getPublicUrl(), port);
+        System.out.printf(" * ngrok tunnel \"%s\" -> \"http://127.0.0.1:%d\"\n", tunnel.getPublicUrl(), port);
     }
 
     private static void printUsage() {
