@@ -21,7 +21,7 @@ repositories {
 }
 
 dependencies {
-    implementation "com.github.alexdlaird:java-ngrok:2.0.0"
+    implementation "com.github.alexdlaird:java-ngrok:2.1.0"
 }
 
 test {
