@@ -1,4 +1,4 @@
-[![CI/CD](https://github.com/alexdlaird/java-ngrok-example-dropwizard/workflows/CI/CD/badge.svg)](https://github.com/alexdlaird/java-ngrok-example-dropwizard/actions?query=workflow%3ACI%2FCD)
+[![Build](https://github.com/alexdlaird/java-ngrok-example-dropwizard/workflows/build.yml/badge.svg)](https://github.com/alexdlaird/java-ngrok-example-dropwizard/actions/workflows/build.yml)
 ![GitHub License](https://img.shields.io/github/license/alexdlaird/java-ngrok-example-dropwizard)
 
 # java-ngrok Example - TCP Server and Client
