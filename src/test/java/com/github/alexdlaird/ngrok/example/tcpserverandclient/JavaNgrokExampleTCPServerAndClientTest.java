@@ -32,18 +32,15 @@ import java.io.IOException;
 
 public class JavaNgrokExampleTCPServerAndClientTest {
 
-    private String host = "localhost";
-
-    private int port = 1200;
-
     private SocketServer socketServer;
 
     private SocketClient socketClient;
 
     @BeforeEach
     public void before() {
+        int port = 1200;
         socketServer = new SocketServer(port);
-        socketClient = new SocketClient(host, port);
+        socketClient = new SocketClient("localhost", port);
     }
 
     @Test
