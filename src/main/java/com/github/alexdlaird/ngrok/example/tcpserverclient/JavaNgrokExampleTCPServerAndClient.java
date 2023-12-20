@@ -24,6 +24,7 @@
 package com.github.alexdlaird.ngrok.example.tcpserverclient;
 
 import com.github.alexdlaird.ngrok.NgrokClient;
+import com.github.alexdlaird.ngrok.conf.JavaNgrokConfig;
 import com.github.alexdlaird.ngrok.protocol.CreateTunnel;
 import com.github.alexdlaird.ngrok.protocol.Proto;
 import com.github.alexdlaird.ngrok.protocol.Tunnel;
@@ -57,7 +58,13 @@ public class JavaNgrokExampleTCPServerAndClient {
     }
 
     private static void startNgrok(final String host, final int port) {
-        final NgrokClient ngrokClient = new NgrokClient.Builder().build();
+        final JavaNgrokConfig javaNgrokConfig = new JavaNgrokConfig.Builder()
+                .withAuthToken(System.getenv("NGROK_AUTHTOKEN"))
+                .build();
+        
+        final NgrokClient ngrokClient = new NgrokClient.Builder()
+                .withJavaNgrokConfig(javaNgrokConfig)
+                .build();
 
         final CreateTunnel createTunnel = new CreateTunnel.Builder()
                 .withProto(Proto.TCP)
