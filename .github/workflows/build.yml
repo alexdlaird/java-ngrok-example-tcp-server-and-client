@@ -26,9 +26,9 @@ jobs:
         with:
           java-version: 11
           distribution: adopt
-      - name: Install dependencies
+      - name: Build
         run: make build
-      - name: Run tests
+      - name: Test
         run: make test
 
   automerge:

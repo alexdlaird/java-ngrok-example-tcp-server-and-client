@@ -13,8 +13,10 @@ endif
 
 all: build
 
+install: build
+
 build:
-	$(GRADLE_BIN) build
+	$(GRADLE_BIN) build -x test
 
 clean:
 	$(GRADLE_BIN) clean
