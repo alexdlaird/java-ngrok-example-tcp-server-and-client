@@ -50,7 +50,7 @@ public class JavaNgrokExampleTCPServerAndClientTest {
         });
         serverThread.start();
 
-        Thread.sleep(1000);
+        Thread.sleep(5000);
 
         final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient(ngrokAuthToken, "client", host, port);
         javaNgrokExampleTCPServerAndClient.run();
@@ -73,7 +73,7 @@ public class JavaNgrokExampleTCPServerAndClientTest {
         });
         serverThread.start();
 
-        Thread.sleep(1000);
+        Thread.sleep(500);
 
         final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient("client", host, port);
         javaNgrokExampleTCPServerAndClient.run();
