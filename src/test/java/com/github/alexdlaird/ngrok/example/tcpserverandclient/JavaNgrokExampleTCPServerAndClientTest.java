@@ -23,37 +23,55 @@
 
 package com.github.alexdlaird.ngrok.example.tcpserverandclient;
 
-import com.github.alexdlaird.ngrok.example.tcpserverclient.SocketClient;
-import com.github.alexdlaird.ngrok.example.tcpserverclient.SocketServer;
-import org.junit.jupiter.api.BeforeEach;
+import com.github.alexdlaird.ngrok.example.tcpserverclient.JavaNgrokExampleTCPServerAndClient;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.List;
+
+import static com.github.alexdlaird.util.StringUtils.isNotBlank;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 public class JavaNgrokExampleTCPServerAndClientTest {
-
-    private SocketServer socketServer;
-
-    private SocketClient socketClient;
-
-    @BeforeEach
-    public void before() {
-        int port = 1200;
-        socketServer = new SocketServer(port);
-        socketClient = new SocketClient("localhost", port);
-    }
-
     @Test
-    public void testPingPong() throws IOException, InterruptedException {
+    public void testPingPong() throws InterruptedException, IOException {
+        assumeTrue(isNotBlank(System.getenv("NGROK_AUTHTOKEN")), "NGROK_AUTHTOKEN environment variable not set");
+        final String host = System.getenv("HOST");
+        final int port = Integer.parseInt(System.getenv("PORT"));
+
         final Thread serverThread = new Thread(() -> {
+            final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient("server", host, port);
             try {
-                socketServer.start();
+                javaNgrokExampleTCPServerAndClient.run();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
         serverThread.start();
-        socketClient.start();
+
+        final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient("client", host, port);
+        javaNgrokExampleTCPServerAndClient.run();
+
+        serverThread.join();
+    }
+
+    @Test
+    public void testPingPongNoNgrok() throws InterruptedException, IOException {
+        final String host = "localhost";
+        final int port = 1200;
+
+        final Thread serverThread = new Thread(() -> {
+            final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient("server", host, port);
+            try {
+                javaNgrokExampleTCPServerAndClient.run();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        serverThread.start();
+
+        final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient("client", host, port);
+        javaNgrokExampleTCPServerAndClient.run();
 
         serverThread.join();
     }

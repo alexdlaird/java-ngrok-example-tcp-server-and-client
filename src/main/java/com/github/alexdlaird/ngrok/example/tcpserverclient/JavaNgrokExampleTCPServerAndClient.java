@@ -31,37 +31,46 @@ import com.github.alexdlaird.ngrok.protocol.Tunnel;
 
 import java.io.IOException;
 
+import static com.github.alexdlaird.util.StringUtils.isNotBlank;
+
 public class JavaNgrokExampleTCPServerAndClient {
 
-    public static void main(String[] args) throws IOException {
-        if (args.length != 1 || !System.getenv().containsKey("HOST") || !System.getenv().containsKey("PORT")) {
-            printUsage();
+    private final String mode;
+    private final String host;
+    private final int port;
 
-            System.exit(0);
-        }
+    public JavaNgrokExampleTCPServerAndClient(final String mode,
+                                              final String host,
+                                              final int port) {
+        this.mode = mode;
+        this.host = host;
+        this.port = port;
+    }
 
-        final String host = System.getenv().get("HOST");
-        final int port = Integer.parseInt(System.getenv().get("PORT"));
-
-        if (args[0].equals("server")) {
-            // Open a ngrok tunnel to the socket
-            startNgrok(host, port);
+    public void run() throws IOException {
+        if (mode.equals("server")) {
+            // Open a ngrok tunnel to the socket, if auth token given
+            if (isNotBlank(System.getenv("NGROK_AUTHTOKEN"))) {
+                startNgrok(host, port);
+            }
 
             final SocketServer socketServer = new SocketServer(port);
             socketServer.start();
-        } else if (args[0].equals("client")) {
+        } else if (mode.equals("client")) {
             final SocketClient socketClient = new SocketClient(host, port);
             socketClient.start();
         } else {
             printUsage();
+
+            throw new RuntimeException();
         }
     }
 
-    private static void startNgrok(final String host, final int port) {
+    private static void startNgrok(final String host,
+                                   final int port) {
         final JavaNgrokConfig javaNgrokConfig = new JavaNgrokConfig.Builder()
-                .withAuthToken(System.getenv("NGROK_AUTHTOKEN"))
                 .build();
-        
+
         final NgrokClient ngrokClient = new NgrokClient.Builder()
                 .withJavaNgrokConfig(javaNgrokConfig)
                 .build();
@@ -81,5 +90,21 @@ public class JavaNgrokExampleTCPServerAndClient {
                 " - environment variables HOST and PORT must be set\n" +
                 " - positional arguments:\n" +
                 "     {server,client}");
+    }
+
+    public static void main(String[] args) throws IOException {
+        if (args.length != 1 || !System.getenv().containsKey("HOST") || !System.getenv().containsKey("PORT") ||
+                (!args[0].equals("server") && !args[0].equals("client"))) {
+            printUsage();
+
+            System.exit(0);
+        }
+
+        final String mode = args[0];
+        final String host = System.getenv().get("HOST");
+        final int port = Integer.parseInt(System.getenv().get("PORT"));
+
+        final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient(mode, host, port);
+        javaNgrokExampleTCPServerAndClient.run();
     }
 }
