@@ -15,9 +15,9 @@ jobs:
     name: Build
 
     env:
-      HOST: "localhost"
-      PORT: 1200
       NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
+      HOST: ${{ secrets.HOST }}
+      PORT: ${{ secrets.PORT }}
 
     runs-on: ubuntu-latest
 
