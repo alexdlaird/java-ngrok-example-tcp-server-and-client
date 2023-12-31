@@ -12,8 +12,8 @@ This is an example of a simple TCP ping/pong server. It opens a local socket, us
 then the client/server communicate via the publicly exposed address.
 
 For this code to run, we first need to go to
-[`ngrok`’s Reserved TCP Addresses](https://dashboard.ngrok.com/endpoints/tcp-addresses) and make a reservation. Set the
-`HOST` and `PORT` environment variables pointing to that reserved address.
+[`ngrok`’s Reserved TCP Addresses](https://dashboard.ngrok.com/cloud-edge/tcp-addresses) and register an address.
+Set the `HOST` and `PORT` environment variables pointing to that reserved address.
 
 Build the application with:
 
@@ -24,14 +24,14 @@ make build
 Start a socket server with:
 
 ```sh
-HOST="1.tcp.ngrok.io" PORT=12345 java -jar build/libs/java-ngrok-example-tcp-server-and-client-1.0.0-SNAPSHOT.jar server
+NGROK_AUTHTOKEN="my-auth-token" PORT=12345 java -jar build/libs/java-ngrok-example-tcp-server-and-client-1.0.0-SNAPSHOT.jar server
 ```
 
 It’s now waiting for incoming connections, so start a client in another terminal to send it something. Start a socket
 client with:
 
 ```sh
-HOST="1.tcp.ngrok.io" PORT=12345 java -jar build/libs/java-ngrok-example-tcp-server-and-client-1.0.0-SNAPSHOT.jar client
+NGROK_AUTHTOKEN="my-auth-token" HOST="1.tcp.ngrok.io" PORT=12345 java -jar build/libs/java-ngrok-example-tcp-server-and-client-1.0.0-SNAPSHOT.jar client
 ```
 
 And that’s it! Data was sent and received from a socket via our `ngrok` tunnel.

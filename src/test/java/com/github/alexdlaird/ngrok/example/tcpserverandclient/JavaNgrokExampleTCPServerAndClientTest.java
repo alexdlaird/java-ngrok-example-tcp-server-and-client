@@ -27,7 +27,6 @@ import com.github.alexdlaird.ngrok.example.tcpserverclient.JavaNgrokExampleTCPSe
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.List;
 
 import static com.github.alexdlaird.util.StringUtils.isNotBlank;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -35,21 +34,25 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 public class JavaNgrokExampleTCPServerAndClientTest {
     @Test
     public void testPingPong() throws InterruptedException, IOException {
-        assumeTrue(isNotBlank(System.getenv("NGROK_AUTHTOKEN")), "NGROK_AUTHTOKEN environment variable not set");
+        final String ngrokAuthToken = System.getenv("NGROK_AUTHTOKEN");
+        assumeTrue(isNotBlank(ngrokAuthToken), "NGROK_AUTHTOKEN environment variable not set");
+
         final String host = System.getenv("HOST");
         final int port = Integer.parseInt(System.getenv("PORT"));
 
         final Thread serverThread = new Thread(() -> {
-            final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient("server", host, port);
+            final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient(ngrokAuthToken, "server", host, port);
             try {
                 javaNgrokExampleTCPServerAndClient.run();
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 throw new RuntimeException(e);
             }
         });
         serverThread.start();
 
-        final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient("client", host, port);
+        Thread.sleep(500);
+
+        final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient(ngrokAuthToken, "client", host, port);
         javaNgrokExampleTCPServerAndClient.run();
 
         serverThread.join();
@@ -69,6 +72,8 @@ public class JavaNgrokExampleTCPServerAndClientTest {
             }
         });
         serverThread.start();
+
+        Thread.sleep(500);
 
         final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient("client", host, port);
         javaNgrokExampleTCPServerAndClient.run();
