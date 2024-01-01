@@ -28,8 +28,8 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static com.github.alexdlaird.util.StringUtils.isNotBlank;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.junit.platform.commons.util.StringUtils.isNotBlank;
 
 public class JavaNgrokExampleTCPServerAndClientTest {
     @Test

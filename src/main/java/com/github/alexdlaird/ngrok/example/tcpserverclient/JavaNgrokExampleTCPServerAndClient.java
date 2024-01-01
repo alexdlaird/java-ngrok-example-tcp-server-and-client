@@ -32,7 +32,6 @@ import com.github.alexdlaird.ngrok.protocol.Tunnel;
 import java.io.IOException;
 
 import static com.github.alexdlaird.util.StringUtils.isNotBlank;
-import static java.util.Objects.nonNull;
 
 public class JavaNgrokExampleTCPServerAndClient {
 
@@ -60,7 +59,7 @@ public class JavaNgrokExampleTCPServerAndClient {
     public void run() throws IOException {
         if (mode.equals("server")) {
             // Open a ngrok tunnel to the socket, if auth token given
-            if (nonNull(ngrokAuthToken)) {
+            if (isNotBlank(ngrokAuthToken)) {
                 startNgrok(host, port);
             }
 
