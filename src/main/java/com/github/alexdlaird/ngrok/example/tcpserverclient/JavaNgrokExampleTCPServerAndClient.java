@@ -31,6 +31,7 @@ import com.github.alexdlaird.ngrok.protocol.Tunnel;
 
 import java.io.IOException;
 
+import static com.github.alexdlaird.util.StringUtils.isBlank;
 import static com.github.alexdlaird.util.StringUtils.isNotBlank;
 
 public class JavaNgrokExampleTCPServerAndClient {
@@ -104,7 +105,11 @@ public class JavaNgrokExampleTCPServerAndClient {
     }
 
     public static void main(String[] args) throws IOException {
-        if (args.length != 1 || !System.getenv().containsKey("NGROK_AUTHTOKEN") || !System.getenv().containsKey("HOST") || !System.getenv().containsKey("PORT") ||
+        if (args.length != 1 ||
+                !System.getenv().containsKey("NGROK_AUTHTOKEN") ||
+                isBlank(System.getenv().get("NGROK_AUTHTOKEN")) ||
+                !System.getenv().containsKey("HOST") ||
+                !System.getenv().containsKey("PORT") ||
                 (!args[0].equals("server") && !args[0].equals("client"))) {
             printUsage();
 
