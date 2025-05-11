@@ -24,7 +24,7 @@ public class JavaNgrokExampleTCPServerAndClientTest {
         final int port = Integer.parseInt(System.getenv("PORT"));
 
         final Thread serverThread = new Thread(() -> {
-            final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient(ngrokAuthToken, "server", host, port);
+            final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient(true, "server", host, port);
             try {
                 javaNgrokExampleTCPServerAndClient.run();
             } catch (final IOException e) {
@@ -35,7 +35,7 @@ public class JavaNgrokExampleTCPServerAndClientTest {
 
         Thread.sleep(5000);
 
-        final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient(ngrokAuthToken, "client", host, port);
+        final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient(true, "client", host, port);
         javaNgrokExampleTCPServerAndClient.run();
 
         serverThread.join();
@@ -47,7 +47,7 @@ public class JavaNgrokExampleTCPServerAndClientTest {
         final int port = 1200;
 
         final Thread serverThread = new Thread(() -> {
-            final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient("server", host, port);
+            final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient(false, "server", host, port);
             try {
                 javaNgrokExampleTCPServerAndClient.run();
             } catch (IOException e) {
@@ -58,7 +58,7 @@ public class JavaNgrokExampleTCPServerAndClientTest {
 
         Thread.sleep(500);
 
-        final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient("client", host, port);
+        final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient(false, "client", host, port);
         javaNgrokExampleTCPServerAndClient.run();
 
         serverThread.join();
