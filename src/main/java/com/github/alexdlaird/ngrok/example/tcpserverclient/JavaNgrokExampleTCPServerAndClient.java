@@ -16,6 +16,8 @@ import com.github.alexdlaird.ngrok.protocol.Tunnel;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class JavaNgrokExampleTCPServerAndClient implements Runnable {
 
@@ -137,9 +139,9 @@ public class JavaNgrokExampleTCPServerAndClient implements Runnable {
                 .withJavaNgrokConfig(javaNgrokConfig)
                 .build();
 
-        return ngrokClient.api(List.of(
+        return ngrokClient.api(Stream.of(
                 "reserved-addrs", "create",
-                "--description", "Created by java-ngrok testcase"));
+                "--description", "Created by java-ngrok testcase").collect(Collectors.toList()));
     }
 
     public static void releaseNgrokAddr(final String reservedAddrId) throws IOException, InterruptedException {
@@ -150,6 +152,6 @@ public class JavaNgrokExampleTCPServerAndClient implements Runnable {
                 .withJavaNgrokConfig(javaNgrokConfig)
                 .build();
 
-        ngrokClient.api(List.of("reserved-addrs", "delete", reservedAddrId));
+        ngrokClient.api(Stream.of("reserved-addrs", "delete", reservedAddrId).collect(Collectors.toList()));
     }
 }
