@@ -18,19 +18,27 @@ import java.util.List;
 
 public class JavaNgrokExampleTCPServerAndClient {
 
-    private final boolean useNgrok;
     private final String mode;
     private final String host;
     private final int port;
+    private final boolean useNgrok;
+    private final NgrokClient ngrokClient;
 
-    public JavaNgrokExampleTCPServerAndClient(final boolean useNgrok,
-                                              final String mode,
+    public JavaNgrokExampleTCPServerAndClient(final String mode,
                                               final String host,
-                                              final int port) {
-        this.useNgrok = useNgrok;
+                                              final int port,
+                                              final boolean useNgrok) {
         this.mode = mode;
         this.host = host;
         this.port = port;
+        this.useNgrok = useNgrok;
+
+        if (this.useNgrok) {
+            ngrokClient = new NgrokClient.Builder()
+                    .build();
+        } else {
+            ngrokClient = null;
+        }
     }
 
     public void run() throws IOException {
@@ -52,15 +60,12 @@ public class JavaNgrokExampleTCPServerAndClient {
         }
     }
 
+    public NgrokClient getNgrokClient() {
+        return this.ngrokClient;
+    }
+
     private void startNgrok(final String host,
                             final int port) {
-        final JavaNgrokConfig javaNgrokConfig = new JavaNgrokConfig.Builder()
-                .build();
-
-        final NgrokClient ngrokClient = new NgrokClient.Builder()
-                .withJavaNgrokConfig(javaNgrokConfig)
-                .build();
-
         final CreateTunnel createTunnel = new CreateTunnel.Builder()
                 .withProto(Proto.TCP)
                 .withAddr(port)
@@ -115,7 +120,7 @@ public class JavaNgrokExampleTCPServerAndClient {
             port = Integer.parseInt(System.getenv("PORT"));
         }
 
-        final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient(useNgrok, mode, host, port);
+        final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient(mode, host, port, useNgrok);
         javaNgrokExampleTCPServerAndClient.run();
     }
 

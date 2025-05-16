@@ -16,6 +16,7 @@ import java.io.IOException;
 import static com.github.alexdlaird.ngrok.example.tcpserverclient.JavaNgrokExampleTCPServerAndClient.releaseNgrokAddr;
 import static com.github.alexdlaird.ngrok.example.tcpserverclient.JavaNgrokExampleTCPServerAndClient.reserveNgrokAddr;
 import static java.util.Objects.nonNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.junit.platform.commons.util.StringUtils.isNotBlank;
 
@@ -41,7 +42,7 @@ public class JavaNgrokExampleTCPServerAndClientTest {
         this.reservedAddrId = String.valueOf(reservedAddr.getData().get("id"));
 
         final Thread serverThread = new Thread(() -> {
-            final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient(true, "server", hostAndPort[0], port);
+            final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient("server", hostAndPort[0], port, true);
             try {
                 javaNgrokExampleTCPServerAndClient.run();
             } catch (final IOException e) {
@@ -52,10 +53,12 @@ public class JavaNgrokExampleTCPServerAndClientTest {
 
         Thread.sleep(5000);
 
-        final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient(true, "client", hostAndPort[0], port);
+        final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient("client", hostAndPort[0], port, true);
         javaNgrokExampleTCPServerAndClient.run();
 
         serverThread.join();
+
+        assertTrue(javaNgrokExampleTCPServerAndClient.getNgrokClient().getNgrokProcess().isRunning());
     }
 
     @Test
@@ -64,7 +67,7 @@ public class JavaNgrokExampleTCPServerAndClientTest {
         final int port = 1200;
 
         final Thread serverThread = new Thread(() -> {
-            final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient(false, "server", host, port);
+            final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient("server", host, port, false);
             try {
                 javaNgrokExampleTCPServerAndClient.run();
             } catch (IOException e) {
@@ -75,9 +78,11 @@ public class JavaNgrokExampleTCPServerAndClientTest {
 
         Thread.sleep(500);
 
-        final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient(false, "client", host, port);
+        final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient("client", host, port, false);
         javaNgrokExampleTCPServerAndClient.run();
 
         serverThread.join();
+
+
     }
 }
