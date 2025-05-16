@@ -14,9 +14,10 @@ import com.github.alexdlaird.ngrok.protocol.Proto;
 import com.github.alexdlaird.ngrok.protocol.Tunnel;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.List;
 
-public class JavaNgrokExampleTCPServerAndClient {
+public class JavaNgrokExampleTCPServerAndClient implements Runnable {
 
     private final String mode;
     private final String host;
@@ -41,22 +42,26 @@ public class JavaNgrokExampleTCPServerAndClient {
         }
     }
 
-    public void run() throws IOException {
-        if (mode.equals("server")) {
-            if (useNgrok) {
-                // Open a ngrok tunnel to the socket
-                startNgrok(host, port);
+    public void run() {
+        try {
+            if (mode.equals("server")) {
+                if (useNgrok) {
+                    // Open a ngrok tunnel to the socket
+                    startNgrok(host, port);
+                }
+
+                final SocketServer socketServer = new SocketServer(port);
+                socketServer.start();
+            } else if (mode.equals("client")) {
+                final SocketClient socketClient = new SocketClient(host, port);
+                socketClient.start();
+            } else {
+                printUsage();
+
+                throw new RuntimeException();
             }
-
-            final SocketServer socketServer = new SocketServer(port);
-            socketServer.start();
-        } else if (mode.equals("client")) {
-            final SocketClient socketClient = new SocketClient(host, port);
-            socketClient.start();
-        } else {
-            printUsage();
-
-            throw new RuntimeException();
+        } catch (final IOException ex) {
+            ex.printStackTrace();
         }
     }
 

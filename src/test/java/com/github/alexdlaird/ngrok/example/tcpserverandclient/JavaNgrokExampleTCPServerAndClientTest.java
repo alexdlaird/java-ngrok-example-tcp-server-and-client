@@ -41,48 +41,33 @@ public class JavaNgrokExampleTCPServerAndClientTest {
         final int port = Integer.parseInt(hostAndPort[1]);
         this.reservedAddrId = String.valueOf(reservedAddr.getData().get("id"));
 
-        final Thread serverThread = new Thread(() -> {
-            final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient("server", hostAndPort[0], port, true);
-            try {
-                javaNgrokExampleTCPServerAndClient.run();
-            } catch (final IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServer = new JavaNgrokExampleTCPServerAndClient("server", hostAndPort[0], port, true);
+        final Thread serverThread = new Thread(javaNgrokExampleTCPServer);
         serverThread.start();
 
         Thread.sleep(5000);
 
-        final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient("client", hostAndPort[0], port, true);
-        javaNgrokExampleTCPServerAndClient.run();
-
-        assertTrue(javaNgrokExampleTCPServerAndClient.getNgrokClient().getNgrokProcess().isRunning());
+        final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPClient = new JavaNgrokExampleTCPServerAndClient("client", hostAndPort[0], port, true);
+        javaNgrokExampleTCPClient.run();
 
         serverThread.join();
+        assertTrue(javaNgrokExampleTCPServer.getNgrokClient().getNgrokProcess().isRunning());
     }
 
     @Test
-    public void testPingPongNoNgrok() throws InterruptedException, IOException {
+    public void testPingPongNoNgrok() throws InterruptedException {
         final String host = "localhost";
         final int port = 1200;
 
-        final Thread serverThread = new Thread(() -> {
-            final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient("server", host, port, false);
-            try {
-                javaNgrokExampleTCPServerAndClient.run();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServer = new JavaNgrokExampleTCPServerAndClient("server", host, port, false);
+        final Thread serverThread = new Thread(javaNgrokExampleTCPServer);
         serverThread.start();
 
         Thread.sleep(500);
 
-        final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient("client", host, port, false);
-        javaNgrokExampleTCPServerAndClient.run();
+        final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPClient = new JavaNgrokExampleTCPServerAndClient("client", host, port, false);
+        javaNgrokExampleTCPClient.run();
 
         serverThread.join();
-
-
     }
 }
