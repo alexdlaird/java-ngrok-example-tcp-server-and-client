@@ -24,10 +24,8 @@ repositories {
 }
 
 dependencies {
-    implementation "com.github.alexdlaird:java8-ngrok:1.4.16"
-    testImplementation "org.junit.jupiter:junit-jupiter-api:5.11.4"
-    testImplementation "org.junit-pioneer:junit-pioneer:2.3.0"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.11.4"
+    implementation "com.github.alexdlaird:java-ngrok:1.4.16"
+    testImplementation "org.junit.jupiter:junit-jupiter:5.11.4"
 }
 
 test {
