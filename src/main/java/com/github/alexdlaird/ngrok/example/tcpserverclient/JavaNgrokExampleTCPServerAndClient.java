@@ -8,11 +8,13 @@ package com.github.alexdlaird.ngrok.example.tcpserverclient;
 
 import com.github.alexdlaird.ngrok.NgrokClient;
 import com.github.alexdlaird.ngrok.conf.JavaNgrokConfig;
+import com.github.alexdlaird.ngrok.protocol.ApiResponse;
 import com.github.alexdlaird.ngrok.protocol.CreateTunnel;
 import com.github.alexdlaird.ngrok.protocol.Proto;
 import com.github.alexdlaird.ngrok.protocol.Tunnel;
 
 import java.io.IOException;
+import java.util.List;
 
 public class JavaNgrokExampleTCPServerAndClient {
 
@@ -34,7 +36,7 @@ public class JavaNgrokExampleTCPServerAndClient {
     public void run() throws IOException {
         if (mode.equals("server")) {
             if (useNgrok) {
-                // Open a ngrok tunnel to the socket, if auth token given
+                // Open a ngrok tunnel to the socket
                 startNgrok(host, port);
             }
 
@@ -66,7 +68,7 @@ public class JavaNgrokExampleTCPServerAndClient {
                 .build();
         final Tunnel tunnel = ngrokClient.connect(createTunnel);
 
-        System.out.printf(" * ngrok tunnel \"%s\" -> \"http://127.0.0.1:%d\"\n", tunnel.getPublicUrl(), port);
+        System.out.printf(" * ngrok tunnel \"%s\" -> \"tcp://127.0.0.1:%d\"\n", tunnel.getPublicUrl(), port);
     }
 
     private static void printUsage() {

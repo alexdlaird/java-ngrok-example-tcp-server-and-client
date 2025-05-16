@@ -4,9 +4,9 @@ run-name: "Build ${{ github.ref_name }}"
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, develop, java8 ]
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main, develop, java8 ]
   schedule:
     - cron: "0 9 * * *"
 
@@ -16,8 +16,7 @@ jobs:
 
     env:
       NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
-      HOST: ${{ secrets.HOST }}
-      PORT: ${{ secrets.PORT }}
+      NGROK_API_KEY: ${{ secrets.NGROK_API_KEY }}
 
     runs-on: ubuntu-latest
 
