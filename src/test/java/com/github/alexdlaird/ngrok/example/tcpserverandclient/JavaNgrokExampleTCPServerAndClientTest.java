@@ -56,9 +56,9 @@ public class JavaNgrokExampleTCPServerAndClientTest {
         final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient("client", hostAndPort[0], port, true);
         javaNgrokExampleTCPServerAndClient.run();
 
-        serverThread.join();
-
         assertTrue(javaNgrokExampleTCPServerAndClient.getNgrokClient().getNgrokProcess().isRunning());
+
+        serverThread.join();
     }
 
     @Test
