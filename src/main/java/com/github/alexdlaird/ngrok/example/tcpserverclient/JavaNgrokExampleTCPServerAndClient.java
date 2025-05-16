@@ -73,15 +73,14 @@ public class JavaNgrokExampleTCPServerAndClient {
 
     private static void printUsage() {
         System.out.println("--- usage---\n" +
-                " - environment variables HOST and PORT must be set\n" +
+                " - for 'server' mode, environment variables NGROK_AUTHTOKEN and NGROK_API_KEY must be set (or specify HOST and PORT to not auto-reserve a TCP address)\n" +
+                " - for 'client' mode, environment variables HOST and PORT must be set\n" +
                 " - positional arguments:\n" +
                 "     {server,client}");
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         if (args.length != 1 ||
-                !System.getenv().containsKey("HOST") ||
-                !System.getenv().containsKey("PORT") ||
                 (!args[0].equals("server") && !args[0].equals("client"))) {
             printUsage();
 
@@ -89,12 +88,58 @@ public class JavaNgrokExampleTCPServerAndClient {
         }
 
         final String mode = args[0];
+
         final boolean useNgrok = System.getenv().getOrDefault("USE_NGROK", "false")
                 .equalsIgnoreCase("true");
-        final String host = System.getenv("HOST");
-        final int port = Integer.parseInt(System.getenv("PORT"));
+
+        if ((mode.equals("server")
+                && !useNgrok
+                && (!System.getenv().containsKey("HOST") || !System.getenv().containsKey("PORT")))
+                || (mode.equals("client")
+                && (!System.getenv().containsKey("HOST") || !System.getenv().containsKey("PORT")))) {
+            printUsage();
+
+            System.exit(0);
+        }
+
+        final String host;
+        final int port;
+        if (useNgrok) {
+            final ApiResponse reservedAddr = reserveNgrokAddr();
+            final String[] hostAndPort = String.valueOf(reservedAddr.getData().get("addr")).split(":");
+            host = hostAndPort[0];
+            port = Integer.parseInt(hostAndPort[1]);
+            System.out.printf("ID of reserved TCP address: %s", reservedAddr.getData().get("id"));
+        } else {
+            host = System.getenv("HOST");
+            port = Integer.parseInt(System.getenv("PORT"));
+        }
 
         final JavaNgrokExampleTCPServerAndClient javaNgrokExampleTCPServerAndClient = new JavaNgrokExampleTCPServerAndClient(useNgrok, mode, host, port);
         javaNgrokExampleTCPServerAndClient.run();
+    }
+
+    public static ApiResponse reserveNgrokAddr() throws IOException, InterruptedException {
+        final JavaNgrokConfig javaNgrokConfig = new JavaNgrokConfig.Builder()
+                .build();
+
+        final NgrokClient ngrokClient = new NgrokClient.Builder()
+                .withJavaNgrokConfig(javaNgrokConfig)
+                .build();
+
+        return ngrokClient.api(List.of(
+                "reserved-addrs", "create",
+                "--description", "Created by java-ngrok testcase"));
+    }
+
+    public static void releaseNgrokAddr(final String reservedAddrId) throws IOException, InterruptedException {
+        final JavaNgrokConfig javaNgrokConfig = new JavaNgrokConfig.Builder()
+                .build();
+
+        final NgrokClient ngrokClient = new NgrokClient.Builder()
+                .withJavaNgrokConfig(javaNgrokConfig)
+                .build();
+
+        ngrokClient.api(List.of("reserved-addrs", "delete", reservedAddrId));
     }
 }

@@ -25,7 +25,6 @@ Start a socket server with:
 USE_NGROK=true \
 NGROK_AUTHTOKEN="my-auth-token" \
 NGROK_API_KEY="my-api-key" \
-PORT=12345 \
 java -jar build/libs/java-ngrok-example-tcp-server-and-client-1.0.0-SNAPSHOT.jar server
 ```
 
@@ -34,8 +33,7 @@ client with:
 
 ```sh
 USE_NGROK=true \
-NGROK_AUTHTOKEN="my-auth-token" \
-NGROK_API_KEY="my-api-key" \
+HOST="1.tcp.ngrok.io" \
 PORT=12345 \
 java -jar build/libs/java-ngrok-example-tcp-server-and-client-1.0.0-SNAPSHOT.jar client
 ```
