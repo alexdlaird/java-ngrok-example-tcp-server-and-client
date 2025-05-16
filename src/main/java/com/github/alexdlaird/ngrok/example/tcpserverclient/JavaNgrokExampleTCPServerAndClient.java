@@ -61,7 +61,7 @@ public class JavaNgrokExampleTCPServerAndClient implements Runnable {
                 throw new RuntimeException();
             }
         } catch (final IOException ex) {
-            ex.printStackTrace();
+            throw new RuntimeException(ex);
         }
     }
 
