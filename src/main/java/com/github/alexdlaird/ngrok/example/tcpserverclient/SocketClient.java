@@ -32,7 +32,7 @@ public class SocketClient {
         InputStream input = null;
         BufferedReader reader = null;
 
-        // Connect to the server with the socket via our ngrok tunnel
+        // Connect to the server with the socket via the ngrok tunnel
         try (Socket socket = new Socket(host, port)) {
             System.out.printf("Connected to %s:%d\n", host, port);
 

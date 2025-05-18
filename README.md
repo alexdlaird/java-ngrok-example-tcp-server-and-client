@@ -38,4 +38,4 @@ PORT=12345 \
 java -jar build/libs/java-ngrok-example-tcp-server-and-client-1.0.0-SNAPSHOT.jar client
 ```
 
-And that’s it! Data was sent and received from a socket via our `ngrok` tunnel.
+And that’s it! Data was sent and received from a socket via your `ngrok` tunnel.
