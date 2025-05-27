@@ -14,7 +14,6 @@ import com.github.alexdlaird.ngrok.protocol.Proto;
 import com.github.alexdlaird.ngrok.protocol.Tunnel;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.util.List;
 
 public class JavaNgrokExampleTCPServerAndClient implements Runnable {
