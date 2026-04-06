@@ -24,7 +24,7 @@ repositories {
 }
 
 dependencies {
-    implementation "com.github.alexdlaird:java-ngrok:2.5.1"
+    implementation "com.github.alexdlaird:java-ngrok:3.0.0"
     testImplementation "org.junit.jupiter:junit-jupiter:5.11.4"
 }
 
