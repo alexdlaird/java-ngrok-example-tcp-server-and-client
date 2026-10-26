@@ -73,7 +73,7 @@ public class JavaNgrokExampleTCPServerAndClient implements Runnable {
         final CreateTunnel createTunnel = new CreateTunnel.Builder()
                 .withProto(Proto.TCP)
                 .withAddr(port)
-                .withRemoteAddr(String.format("%s:%s", host, port))
+                .withUrl(String.format("tcp://%s:%s", host, port))
                 .build();
         final Tunnel tunnel = ngrokClient.connect(createTunnel);
 
@@ -113,12 +113,16 @@ public class JavaNgrokExampleTCPServerAndClient implements Runnable {
 
         final String host;
         final int port;
-        if (useNgrok) {
+        if (useNgrok
+                && (!System.getenv().containsKey("HOST") || !System.getenv().containsKey("PORT"))) {
             final ApiResponse reservedAddr = reserveNgrokAddr();
             final String[] hostAndPort = String.valueOf(reservedAddr.getData().get("addr")).split(":");
             host = hostAndPort[0];
             port = Integer.parseInt(hostAndPort[1]);
-            System.out.printf("ID of reserved TCP address: %s", reservedAddr.getData().get("id"));
+            final String reservedAddrId = String.valueOf(reservedAddr.getData().get("id"));
+            System.out.printf("ID of reserved TCP address: %s\n", reservedAddrId);
+
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> releaseNgrokAddrOnShutdown(reservedAddrId)));
         } else {
             host = System.getenv("HOST");
             port = Integer.parseInt(System.getenv("PORT"));
@@ -139,6 +143,15 @@ public class JavaNgrokExampleTCPServerAndClient implements Runnable {
         return ngrokClient.api(List.of(
                 "reserved-addrs", "create",
                 "--description", "Created by java-ngrok testcase"));
+    }
+
+    private static void releaseNgrokAddrOnShutdown(final String reservedAddrId) {
+        try {
+            releaseNgrokAddr(reservedAddrId);
+            System.out.printf("Released reserved TCP address: %s\n", reservedAddrId);
+        } catch (final IOException | InterruptedException ex) {
+            System.err.printf("Failed to release reserved TCP address %s: %s\n", reservedAddrId, ex.getMessage());
+        }
     }
 
     public static void releaseNgrokAddr(final String reservedAddrId) throws IOException, InterruptedException {

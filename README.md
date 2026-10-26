@@ -1,5 +1,5 @@
 [![Build](https://img.shields.io/github/actions/workflow/status/alexdlaird/java-ngrok-example-tcp-server-and-client/build.yml)](https://github.com/alexdlaird/java-ngrok-example-tcp-server-and-client/actions/workflows/build.yml)
-![GitHub License](https://img.shields.io/github/license/alexdlaird/java-ngrok-example-dropwizard)
+![GitHub License](https://img.shields.io/github/license/alexdlaird/java-ngrok-example-tcp-server-and-client)
 
 # java-ngrok Example - TCP Server and Client
 
@@ -39,3 +39,6 @@ java -jar build/libs/java-ngrok-example-tcp-server-and-client-1.0.0-SNAPSHOT.jar
 ```
 
 And that’s it! Data was sent and received from a socket via your `ngrok` tunnel.
+
+To run the tests, use `make test`. Tests that open a tunnel are skipped if `NGROK_AUTHTOKEN` or `NGROK_API_KEY`
+isn't set.
