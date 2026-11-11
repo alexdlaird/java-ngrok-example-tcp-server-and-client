@@ -3,7 +3,7 @@
 
 # java-ngrok Example - TCP Server and Client
 
-This is an example project that shows how to easily integrate [`java-ngrok`](https://github.com/alexdlaird/java-ngrok)
+This is an example project that shows how to easily integrate [`java-ngrok`](https://java-ngrok.alexlaird.com/)
 with a simple TCP Server and Client.
 
 ## Getting Started
